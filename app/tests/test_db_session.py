@@ -2,7 +2,7 @@ from sqlalchemy import text
 from app.db.database import get_db, get_engine
 
 def test_get_db(monkeypatch):
-    monkeypatch.setenv('DB_URL', 'sqlite:/// ./test.db')
+    monkeypatch.setenv('DB_URL', 'sqlite:///./test.db')
 
     # clear cached engine so new DB is used
     get_engine.cache_clear()
