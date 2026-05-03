@@ -4,7 +4,6 @@ from sqlalchemy.pool import StaticPool
 from functools import lru_cache
 from app.config.env_config import get_settings
 
-#TODO: move it to the config folder
 @lru_cache
 def get_engine():
     settings = get_settings()
@@ -29,6 +28,14 @@ def get_session_local():
 Base = declarative_base()
 
 def get_db():
+    """Provide a database session.
+
+    Yields:
+        Session: SQLAlchemy session instance.
+
+    Ensures:
+        Session is properly closed after use.
+    """
     SessionLocal = get_session_local()
     db: Session = SessionLocal()
     try:

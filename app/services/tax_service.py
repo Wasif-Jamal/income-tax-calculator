@@ -1,13 +1,30 @@
 from app.config.log_config import logger
 
 class TaxCalculator:
+    """Service class to calculate income tax based on regime."""
 
     def __init__(self, income: float, hra: float, regime: str):
+        """Initialize TaxCalculator.
+
+        Args:
+            income (float): Total annual income.
+            hra (float): House Rent Allowance.
+            regime (str): Tax regime ("old" or "new").
+        """
         self.income = income
         self.hra = hra
         self.regime = regime.lower()
 
     def calculate(self) -> float:
+        """Calculate total tax based on regime.
+
+        Returns:
+            float: Calculated tax amount.
+
+        Raises:
+            ValueError: If regime is invalid.
+            ValueError: If unexpected error occurs.
+        """
         logger.info(f"Calculating tax for income={self.income}")
         try:
             taxable_income = self._get_taxable_income()
@@ -33,6 +50,11 @@ class TaxCalculator:
             raise ValueError(f'Unexpected error during tax calculation: {str(e)}')
     
     def _get_taxable_income(self):
+        """Compute taxable income after deductions.
+
+        Returns:
+            float: Taxable income (non-negative).
+        """
         if self.regime == "old":
             standard_deduction = 50000
         else:
@@ -42,6 +64,14 @@ class TaxCalculator:
         return max(taxable_income, 0)
     
     def _calculate_old_regime(self, income):
+        """Calculate tax under old regime slabs.
+
+        Args:
+            income (float): Taxable income.
+
+        Returns:
+            float: Calculated tax.
+        """
         tax = 0
 
         if income > 1000000:
@@ -58,6 +88,14 @@ class TaxCalculator:
         return tax
     
     def _calculate_new_regime(self, income):
+        """Calculate tax under new regime slabs.
+
+        Args:
+            income (float): Taxable income.
+
+        Returns:
+            float: Calculated tax.
+        """
         tax = 0
 
         slabs = [
@@ -77,11 +115,29 @@ class TaxCalculator:
         return tax
     
     def _apply_rebate_old(self, income, tax):
+        """Apply rebate under old regime.
+
+        Args:
+            income (float): Taxable income.
+            tax (float): Calculated tax.
+
+        Returns:
+            float: Final tax after rebate.
+        """
         if income <= 500000:
             return 0
         return tax
 
     def _apply_rebate_new(self, income, tax):
+        """Apply rebate under new regime.
+
+        Args:
+            income (float): Taxable income.
+            tax (float): Calculated tax.
+
+        Returns:
+            float: Final tax after rebate.
+        """
         if income <= 1200000:
             return 0
         return tax

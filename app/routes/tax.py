@@ -12,6 +12,13 @@ router = APIRouter()
 
 @router.post("/calculate-tax", response_model=TaxResponse)
 def calculate_tax_api(payload: TaxRequest, db: Session = Depends(get_db)):
+    """Calculate income tax.
+
+    Accepts income, HRA, and tax regime, and returns computed tax.
+
+    Returns:
+        dict: Tax calculation result.
+    """
     calculator = TaxCalculator(
         payload.income,
         payload.hra,
