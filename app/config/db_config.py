@@ -4,6 +4,7 @@ from sqlalchemy.pool import StaticPool
 from functools import lru_cache
 from app.config.env_config import get_settings
 
+#TODO: move it to the config folder
 @lru_cache
 def get_engine():
     settings = get_settings()
@@ -11,7 +12,7 @@ def get_engine():
         return create_engine(
             settings.DB_URL,
             connect_args={"check_same_thread": False},
-            poolclass=StaticPool   # 🔥 IMPORTANT
+            poolclass=StaticPool
         )
 
     return create_engine(settings.DB_URL)

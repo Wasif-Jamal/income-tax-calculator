@@ -1,4 +1,20 @@
-import uvicorn
+from fastapi import FastAPI
 
-if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+from app.config.db_config import Base, engine
+from app.routes.tax import router as tax_router
+
+
+def start_application() -> FastAPI:
+    app = FastAPI(
+        title="Income Tax Calculator",
+        version="1.0.0",
+        description="Simple tax calculator API"
+    )
+
+    # DB init
+    Base.metadata.create_all(bind=engine)
+
+    # Routes
+    app.include_router(tax_router)
+
+    return app

@@ -1,9 +1,10 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+from typing import Literal
 
 class TaxRequest(BaseModel):
-    income: float
-    hra: float
-    regime: str # 'old' or 'new'
+    income: float = Field(..., ge=0)
+    hra: float = Field(..., ge=0)
+    regime: Literal['old', 'new']
 
 class TaxResponse(BaseModel):
     tax: float

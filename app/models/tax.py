@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Float, String
-from app.db.database import Base
+from app.config.db_config import Base
 
 class TaxRecord(Base):
     __tablename__ = 'tax_records'

@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from app.db.database import Base, get_engine
+from app.config.db_config import Base, get_engine
 
 @pytest.fixture
 def client(monkeypatch):

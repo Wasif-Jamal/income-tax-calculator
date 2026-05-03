@@ -1,5 +1,5 @@
 from sqlalchemy import text
-from app.db.database import get_engine
+from app.config.db_config import get_engine
 
 def test_database_connection(monkeypatch):
     monkeypatch.setenv('DB_URL', "sqlite:///./test.db")
