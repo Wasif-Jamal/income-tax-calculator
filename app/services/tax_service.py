@@ -1,3 +1,5 @@
+from app.config.log_config import logger
+
 class TaxCalculator:
 
     def __init__(self, income: float, hra: float, regime: str):
@@ -6,6 +8,7 @@ class TaxCalculator:
         self.regime = regime.lower()
 
     def calculate(self) -> float:
+        logger.info(f"Calculating tax for income={self.income}")
         try:
             taxable_income = self._get_taxable_income()
 
@@ -26,6 +29,7 @@ class TaxCalculator:
             raise
 
         except Exception as e:
+            logger.exception(f'Unexpected error during tax calculation: {str(e)}')
             raise ValueError(f'Unexpected error during tax calculation: {str(e)}')
     
     def _get_taxable_income(self):
