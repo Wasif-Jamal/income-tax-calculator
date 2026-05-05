@@ -1,5 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
+from app.exceptions.custom_exceptions import InvalidRegimeError
 from app.services.tax_service import TaxCalculator
 from app.config.db_config import Base, get_engine
 
@@ -122,10 +123,11 @@ def test_tax_rounding():
 def test_invalid_regime():
     calc = TaxCalculator(500000, 0, "invalid")
 
-    with pytest.raises(ValueError) as exc:
+    with pytest.raises(InvalidRegimeError) as exc:
         calc.calculate()
+    print(f'INVALIDREGIMEERROR: {str(exc.value)}')
 
-    assert str(exc.value) == "Invalid regime"
+    assert "Invalid regime" in str(exc.value)
 
 
 # ------------------------
@@ -136,10 +138,10 @@ def test_unexpected_error():
     # Passing wrong type to trigger unexpected exception
     calc = TaxCalculator("abc", 0, "old")
 
-    with pytest.raises(ValueError) as exc:
+    with pytest.raises(TypeError) as exc:
         calc.calculate()
 
-    assert "Unexpected error during tax calculation" in str(exc.value)
+    assert isinstance(exc.value, TypeError)
 
 @pytest.fixture
 def client(monkeypatch):

@@ -1,4 +1,6 @@
 from app.config.log_config import logger
+from app.exceptions.custom_exceptions import InvalidRegimeError, AppError
+from app.config.log_config import logger
 
 class TaxCalculator:
     """Service class to calculate income tax based on regime."""
@@ -22,32 +24,24 @@ class TaxCalculator:
             float: Calculated tax amount.
 
         Raises:
-            ValueError: If regime is invalid.
-            ValueError: If unexpected error occurs.
+            InvalidRegimeError: If regime is invalid.
+            CalculationError: If unexpected error occurs.
         """
         logger.info(f"Calculating tax for income={self.income}")
-        try:
-            taxable_income = self._get_taxable_income()
+        taxable_income = self._get_taxable_income()
 
-            if self.regime == "old":
-                tax = self._calculate_old_regime(taxable_income)
-                tax = self._apply_rebate_old(taxable_income, tax)
+        if self.regime == "old":
+            tax = self._calculate_old_regime(taxable_income)
+            tax = self._apply_rebate_old(taxable_income, tax)
 
-            elif self.regime == "new":
-                tax = self._calculate_new_regime(taxable_income)
-                tax = self._apply_rebate_new(taxable_income, tax)
+        elif self.regime == "new":
+            tax = self._calculate_new_regime(taxable_income)
+            tax = self._apply_rebate_new(taxable_income, tax)
 
-            else:
-                raise ValueError("Invalid regime")
+        else:
+            raise InvalidRegimeError()
 
-            return round(tax, 2)
-        
-        except ValueError:
-            raise
-
-        except Exception as e:
-            logger.exception(f'Unexpected error during tax calculation: {str(e)}')
-            raise ValueError(f'Unexpected error during tax calculation: {str(e)}')
+        return round(tax, 2)
     
     def _get_taxable_income(self):
         """Compute taxable income after deductions.

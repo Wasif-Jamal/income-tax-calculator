@@ -11,7 +11,7 @@ from app.repository.tax_repository import create_tax_record, get_all_records
 router = APIRouter()
 
 @router.post("/calculate-tax", response_model=TaxResponse)
-def calculate_tax_api(payload: TaxRequest, db: Session = Depends(get_db)):
+async def calculate_tax_api(payload: TaxRequest, db: Session = Depends(get_db))->TaxResponse:
     """Calculate income tax.
 
     Accepts income, HRA, and tax regime, and returns computed tax.
@@ -20,9 +20,9 @@ def calculate_tax_api(payload: TaxRequest, db: Session = Depends(get_db)):
         dict: Tax calculation result.
     """
     calculator = TaxCalculator(
-        payload.income,
-        payload.hra,
-        payload.regime
+        income=payload.income,
+        hra=payload.hra,
+        regime=payload.regime
     )
 
     tax = calculator.calculate()
@@ -38,6 +38,6 @@ def calculate_tax_api(payload: TaxRequest, db: Session = Depends(get_db)):
     return {'tax': tax}
 
 @router.get("/history", response_model=List[TaxRecordResponse])
-def get_tax_history(db: Session = Depends(get_db)):
+async def get_tax_history(db: Session = Depends(get_db))->List[TaxRecordResponse]:
     records = get_all_records(db)
     return records
