@@ -30,22 +30,3 @@ if st.button("Calculate Tax"):
 
     except Exception as e:
         st.error("API not reachable")
-
-st.subheader("Tax History")
-
-if st.button("Load History"):
-    try:
-        response = requests.get(f"{API_URL}/history")
-
-        if response.status_code == 200:
-            data = response.json()
-
-            if data:
-                st.table(data)
-            else:
-                st.info("No records found")
-        else:
-            st.error("Failed to fetch history")
-
-    except Exception:
-        st.error("API not reachable")
